@@ -32,7 +32,6 @@ class Handler(FileSystemEventHandler):
     def on_created(event):
         # Check if the file is a video file (you can adjust the extension as needed)
         if event.is_directory or not event.src_path.lower().endswith(('.mp4', '.avi', '.mov')):
-            print("No bueno")
             return
         print(f"Received created event - {event.src_path}.")
         extract_frames(event.src_path)
