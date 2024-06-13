@@ -6,7 +6,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 class Watcher:
-    DIRECTORY_TO_WATCH = "video/"  # Change this to the directory you want to watch
+    DIRECTORY_TO_WATCH = "/Users/mohamedgamil/Desktop/Eindhoven/block3/idp/code/demo/video/"  # Change this to the directory you want to watch
+    DIRECTORY_TO_SAVE = "/Users/mohamedgamil/Desktop/Eindhoven/block3/idp/code/demo/frames/"  # Change this to the directory you want to save the frames
     if not os.path.exists(DIRECTORY_TO_WATCH):
         print(f"Directory {DIRECTORY_TO_WATCH} does not exist.")
 
@@ -38,7 +39,7 @@ class Handler(FileSystemEventHandler):
 
 def extract_frames(video_path):
     current_time = datetime.now().strftime('%H-%M-%S')
-    frames_dir = os.path.join(Watcher.DIRECTORY_TO_WATCH, current_time)
+    frames_dir = os.path.join(Watcher.DIRECTORY_TO_SAVE, current_time)
     os.makedirs(frames_dir, exist_ok=True)
 
     cap = cv2.VideoCapture(video_path)
