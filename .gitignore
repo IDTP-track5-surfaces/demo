@@ -1,3 +1,7 @@
 
 video/*
 frames/*
+model/*
+*.pyc
+*.DS_Store
+*/logs/*

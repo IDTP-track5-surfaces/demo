@@ -4,10 +4,12 @@ import time
 from datetime import datetime
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-
+from infer import infer
 class Watcher:
     DIRECTORY_TO_WATCH = "/Users/mohamedgamil/Desktop/Eindhoven/block3/idp/code/demo/video/"  # Change this to the directory you want to watch
     DIRECTORY_TO_SAVE = "/Users/mohamedgamil/Desktop/Eindhoven/block3/idp/code/demo/frames/"  # Change this to the directory you want to save the frames
+    MODEL_LOCATION = "/Users/mohamedgamil/Desktop/Eindhoven/block3/idp/code/demo/model/final_model.h5"  # Change this to the location of the model
+
     if not os.path.exists(DIRECTORY_TO_WATCH):
         print(f"Directory {DIRECTORY_TO_WATCH} does not exist.")
 
@@ -35,12 +37,10 @@ class Handler(FileSystemEventHandler):
         if event.is_directory or not event.src_path.lower().endswith(('.mp4', '.avi', '.mov')):
             return
         print(f"Received created event - {event.src_path}.")
-        extract_frames(event.src_path)
+        run_model(event.src_path, Watcher.MODEL_LOCATION)
 
-def extract_frames(video_path):
-    current_time = datetime.now().strftime('%H-%M-%S')
-    frames_dir = os.path.join(Watcher.DIRECTORY_TO_SAVE, current_time)
-    os.makedirs(frames_dir, exist_ok=True)
+def extract_frames(video_path , frames_dir):
+
 
     cap = cv2.VideoCapture(video_path)
     frame_count = 0
@@ -55,6 +55,15 @@ def extract_frames(video_path):
             break
     cap.release()
     print("All frames extracted and saved.")
+
+def run_model(video_path, model_path):
+
+    current_time = datetime.now().strftime('%H-%M-%S')
+    frames_dir = os.path.join(Watcher.DIRECTORY_TO_SAVE, current_time)
+    os.makedirs(frames_dir, exist_ok=True)
+    extract_frames(video_path, frames_dir)
+    infer(frames_dir, model_path)
+    
 
 if __name__ == "__main__":
     w = Watcher()
