@@ -8,7 +8,7 @@ import numpy as np
 from model import create_model
 import matplotlib.pyplot as plt
 
-def min_depth_over_time_plot(prediction):
+def min_depth_over_time_plot(prediction,current_time):
     """
     Plot the maximum depth over time.
     """
@@ -20,12 +20,12 @@ def min_depth_over_time_plot(prediction):
     plt.ylabel('Depth')
     plt.grid()
     plt.tight_layout()
-    plt.savefig('logs/min_depth_over_time.png')
+    plt.savefig('logs/' +str(current_time)+ '/min_depth_over_time.png')
     plt.close()
 
 
 
-def plot_inference(infer_refracted, infer_reference, infer_predictions):
+def plot_inference(infer_refracted, infer_reference, infer_predictions,current_time):
     num_samples = infer_refracted.shape[0]
     num_pages = (num_samples + 2) // 3  # Calculate how many pages are needed
 
@@ -47,14 +47,14 @@ def plot_inference(infer_refracted, infer_reference, infer_predictions):
             ax2.axis('off')
 
             ax3 = plt.subplot(3, 4, 4*i + 3)
-            im_pred = ax3.imshow(infer_predictions[idx, :, :, 0], cmap='viridis')
+            im_pred = ax3.imshow(infer_predictions[idx, :, :, 0], cmap='viridis', vmin=0.4, vmax=1)
             ax3.set_title('Predicted Depth')
             ax3.axis('off')
 
             plt.colorbar(im_pred, ax=ax3, fraction=0.046, pad=0.04)
 
         plt.tight_layout()
-        page_path = f"logs/inference_page_{page_idx+1}.png"
+        page_path = f"logs/" +str(current_time)+ "/inference_page_"+str(page_idx)+".png"
         os.makedirs(os.path.dirname(page_path), exist_ok=True)  # Ensure the directory exists
         plt.savefig(page_path)
         plt.close()  # Close the plot to free memory
@@ -88,7 +88,7 @@ def load_tensors(data_path):
 
     return input_tensors
 
-def infer(data_path, model_path): 
+def infer(data_path, model_path, current_time): 
     model, custom_objects = create_model()
 
     input_tensors = load_tensors(data_path)
@@ -100,8 +100,8 @@ def infer(data_path, model_path):
     predictions = loaded_model.predict(input_tensors)
     print("Predictions shape: ", predictions.shape)
 
-    plot_inference(input_tensors[:, :, :, :3], input_tensors[:, :, :, 3:], predictions)
-    min_depth_over_time_plot(predictions)
+    plot_inference(input_tensors[:, :, :, :3], input_tensors[:, :, :, 3:], predictions , current_time)
+    min_depth_over_time_plot(predictions, current_time)
 
 
 

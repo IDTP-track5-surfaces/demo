@@ -62,7 +62,7 @@ def run_model(video_path, model_path):
     frames_dir = os.path.join(Watcher.DIRECTORY_TO_SAVE, current_time)
     os.makedirs(frames_dir, exist_ok=True)
     extract_frames(video_path, frames_dir)
-    infer(frames_dir, model_path)
+    infer(frames_dir, model_path, current_time)
     
 
 if __name__ == "__main__":
